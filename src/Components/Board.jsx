@@ -33,6 +33,7 @@ const Square = styled.div`
 
 const Board = props => {
   let boardData = props.boardData || [];
+  let visibilityData = props.visibilityData || [];
 
   return (
     <BoardElt>
@@ -46,7 +47,7 @@ const Board = props => {
                 data-row={rowIdx}
                 data-col={colIdx}
                 onClick={e => props.squareCb(e)}
-                className={`square ${(value !== 0 && value !== -1) ? 'visible' : ''}`}
+                className={`square${visibilityData[rowIdx][colIdx] ? ' show': ''}`}
                 >
                   {value}
               </Square>
