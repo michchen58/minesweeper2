@@ -79,10 +79,17 @@ class App extends Component {
     });
   }
 
-  clickSquare(e) {
+  clickSquare(e, flag) {
     if (this.state.gameResult !== 0) {
       return;
     }
+
+    if(flag) {
+      alert('f');
+      e.preventDefault();
+      return;
+    }
+
 
     const board = this.state.board;
     const row = Number(e.target.dataset.row);
@@ -117,16 +124,10 @@ class App extends Component {
   }
 
   addFlag(e) {
-    // e.preventDefault();
-    // if (this.state.gameResult !== 0) {
-    //   return;
-    // }
-    //
-    // const row = Number(e.target.dataset.row);
-    // const col = Number(e.target.dataset.col);
-    //
-    // alert('f');
-    // return;
+    if (this.state.gameResult !== 0) {
+      return;
+    }
+    console.log(e);
   }
 
   constructor(props) {
@@ -156,7 +157,6 @@ class App extends Component {
           squareCb={this.clickSquare}
           flagCb={this.addFlag}
         />
-        <br />
         <Debug settings={settings} state={this.state}></Debug>
       </div>
     );
