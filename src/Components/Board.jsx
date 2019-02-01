@@ -23,33 +23,36 @@ const Square = styled.div`
   flex-direction: column;
   justify-content:center;
   text-align:center;
-  border: 1px solid #aaa;
+  border: ${Math.round(settings.square.size * 0.1)}px solid;
+  border-top-color: #ffffff;
+  border-right-color: #7B7B7B;
+  border-bottom-color: #7B7B7B;
+  border-left-color: #ffffff;
+  background-color: #B9B9B9;
   cursor: pointer;
-  font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
   font-weight: 300;
   color: #ddd;
 `;
-
 
 const Board = props => {
   let boardData = props.boardData || [];
   let visibilityData = props.visibilityData || [];
 
   return (
-    <BoardElt>
+    <BoardElt id="board">
       {boardData.map((rowArr, rowIdx) => (
         <Row key={`R${rowIdx}`}>
           {rowArr.map((square, colIdx) => {
             let value = boardData.length > 0 ? rowArr[colIdx] : '';
             return (
               <Square
-                key={`${rowIdx}-${colIdx}`}
-                data-row={rowIdx}
-                data-col={colIdx}
+                className={`square ${visibilityData[rowIdx][colIdx] ? 'show': ''} ${boardData[rowIdx][colIdx] === 'X' ? 'boom': ''}`}
+                data-row={rowIdx} data-col={colIdx}
                 onClick={e => props.squareCb(e)}
-                className={`square${visibilityData[rowIdx][colIdx] ? ' show': ''}`}
+                onContextMenu={e => props.flagCb(e, true)}
+                key={`${rowIdx}-${colIdx}`}
                 >
-                  {value}
+                  {visibilityData[rowIdx][colIdx]=== true ? value || null: ''}
               </Square>
             )
           })}

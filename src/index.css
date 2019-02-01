@@ -1,15 +1,28 @@
 body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
-    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
-    sans-serif;
-
+  font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
-    monospace;
+.App {
+  flex-direction: column;
 }
 
 .square.show {
   color:black;
+  border: 1px solid #7B7B7B;
+  padding: 3px;
+}
+
+.square.boom {
+  background-color: red;
+}
+
+.App.win {
+  background-color: #9f9;
+}
+
+.App.lose {
+  background-color: #f99;
+}
+
+#board {
 }
