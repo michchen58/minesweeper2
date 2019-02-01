@@ -46,13 +46,15 @@ const Board = props => {
             let value = boardData.length > 0 ? rowArr[colIdx] : '';
             return (
               <Square
-                className={`square ${visibilityData[rowIdx][colIdx] ? 'show': ''} ${boardData[rowIdx][colIdx] === 'X' ? 'boom': ''}`}
+                className={`square ${visibilityData[rowIdx][colIdx] === 1 ? 'show': ''} ${boardData[rowIdx][colIdx] === 'X' ? 'boom': ''}`}
                 data-row={rowIdx} data-col={colIdx}
                 onClick={e => props.squareCb(e)}
                 onContextMenu={e => props.flagCb(e, true)}
                 key={`${rowIdx}-${colIdx}`}
                 >
-                  {visibilityData[rowIdx][colIdx]=== true ? value || null: ''}
+                  {visibilityData[rowIdx][colIdx] === 0 ? '' :
+                    visibilityData[rowIdx][colIdx] === 1 ? (value || null) : 'F'
+                  }
               </Square>
             )
           })}

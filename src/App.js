@@ -37,9 +37,31 @@ function generateBoard() {
 
 class App extends Component {
   checkWin() {
-    if (this.state.mineCount + this.state.clearedCount === settings.height * settings.width) {
+    // console.log(`${this.state.flagCount} vs ${this.state.mineCount}`)
+    if (this.state.flags.count === this.state.mineCount) {
+      let isWin = true;
+      Object.keys(this.state.flags.coords).forEach(curKey => {
+        let curCoords = curKey.split('-');
+        let row = curCoords[0];
+        let col = curCoords[1];
+        if (this.state.board[row][col] !== -1) {
+          isWin = false;
+        }
+      });
+
+      if (isWin === true) {
+        this.setState({
+          gameResult: 1
+        }, () => {
+          alert('win!');
+        });
+      }
+
+    } else if (this.state.mineCount + this.state.clearedCount === settings.height * settings.width) {
       this.setState({
         gameResult: 1
+      }, () => {
+        alert('win!');
       });
     }
   }
@@ -54,9 +76,9 @@ class App extends Component {
       if (r < 0 || r > settings.height - 1 || c < 0 || c > settings.height - 1) {
         // console.log('out of bounds; return');
         return;
-      } else if (visibilityCopy[r][c] === false){
+      } else if (visibilityCopy[r][c] === 0){
         // console.log(`cur: ${r}, ${c}`);
-        visibilityCopy[r][c] = true;
+        visibilityCopy[r][c] = 1;
         newVisibleCount++;
         if (board[r][c] === 0) {
           for (let rowIdx = -1; rowIdx <= 1; rowIdx++) {
@@ -84,13 +106,6 @@ class App extends Component {
       return;
     }
 
-    if(flag) {
-      alert('f');
-      e.preventDefault();
-      return;
-    }
-
-
     const board = this.state.board;
     const row = Number(e.target.dataset.row);
     const col = Number(e.target.dataset.col);
@@ -102,14 +117,14 @@ class App extends Component {
       this.setState({
         gameResult: -1,
         board: boardCopy,
-        visibility: Array(settings.height).fill(Array(settings.width).fill(true)),
+        visibility: Array(settings.height).fill(Array(settings.width).fill(1)),
         clearedCount: this.state.clearedCount + 1
       })
       return;
     }
 
     let visibilityCopy = JSON.parse(JSON.stringify(this.state.visibility));
-    visibilityCopy[row][col] = true;
+    visibilityCopy[row][col] = 1;
 
     if (value === 0){
       this.flood(row, col);
@@ -124,10 +139,35 @@ class App extends Component {
   }
 
   addFlag(e) {
+    e.preventDefault();
+
     if (this.state.gameResult !== 0) {
       return;
     }
-    console.log(e);
+
+    let {row, col} = e.target.dataset;
+    let visibleCopy = JSON.parse(JSON.stringify(this.state.visibility));
+    let cur = visibleCopy[row][col];
+    let flagsCopy = JSON.parse(JSON.stringify(this.state.flags));
+
+    if (cur === 0) { // add flag
+      visibleCopy[row][col] = -1;
+      flagsCopy.coords[`${row}-${col}`] = true;
+      flagsCopy.count++;
+    } else if (cur === -1){ // remove flag
+      visibleCopy[row][col] = 0;
+      delete flagsCopy.coords[`${row}-${col}`];
+      flagsCopy.count--;
+    }
+
+    this.setState({
+      visibility: visibleCopy,
+      flags: flagsCopy
+    }, () => {
+      this.checkWin();
+    });
+
+    return;
   }
 
   constructor(props) {
@@ -137,7 +177,8 @@ class App extends Component {
       // i wasn't able to access generateBoard as a method of the class?
       board: boardData.board,
       mineCount: boardData.mineCount,
-      visibility: Array(settings.height).fill(Array(settings.width).fill(false)),
+      flags: {count: 0, coords: {}},
+      visibility: Array(settings.height).fill(Array(settings.width).fill(0)),
       gameResult: 0,
       clearedCount: 0
     }
